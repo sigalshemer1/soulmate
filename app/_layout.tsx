@@ -8,9 +8,12 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import HomeScreen from './Home';
+import { AppProvider  } from './AppContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import logo from '../assets/images/logo.png';
+
+import Home from './Home';
+import Settings from './Settings';
 
 export const HeaderLogo = () => (
   <Image
@@ -23,7 +26,7 @@ export const HeaderLogo = () => (
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const RootLayout = () => {
+const Layout  = () => {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -42,30 +45,42 @@ const RootLayout = () => {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <Tab.Navigator 
-      screenOptions={{
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: '#898889',
-        headerStyle: styles.header,
-        headerTintColor: '#898889',
-        headerTitle: () => <HeaderLogo />,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home-outline" color={color} size={size} />
-          ),
+    <AppProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Tab.Navigator 
+        screenOptions={{
+          tabBarStyle: styles.tabBar,
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#898889',
+          headerStyle: styles.header,
+          headerTintColor: '#898889',
+          headerTitle: () => <HeaderLogo />,
         }}
-      />
-    </Tab.Navigator>
-    <StatusBar style="auto" />
-  </ThemeProvider>
+      >
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="home-outline" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={Settings}
+          options={{
+            headerShown: false,  
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="settings-outline" color={color} size={size} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  </AppProvider>
   );
 }
 
@@ -88,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RootLayout;
+export default Layout ;
